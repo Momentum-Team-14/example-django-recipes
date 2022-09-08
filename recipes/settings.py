@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import environ
+import django_on_heroku
 
 env = environ.Env(
     # set casting, default value
@@ -25,7 +26,6 @@ DEBUG = env("DEBUG")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -172,3 +172,6 @@ LOGGING = {
 ACCOUNT_ACTIVATION_DAYS = 7
 REGISTRATION_AUTO_LOGIN = True
 LOGIN_REDIRECT_URL = "/"
+
+django_on_heroku.settings(locals())
+del DATABASES["default"]["OPTIONS"]["sslmode"]
