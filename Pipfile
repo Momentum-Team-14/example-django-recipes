@@ -8,12 +8,12 @@ django = "*"
 django-environ = "*"
 django-extensions = "*"
 django-registration-redux = "*"
-django-debug-toolbar = "*"
 psycopg2-binary = "*"
 django-ordered-model = "*"
 django-toggle-m2m = "*"
 django-on-heroku = "*"
 gunicorn = "*"
+djangorestframework = "*"
 
 [dev-packages]
 black = "*"
