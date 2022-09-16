@@ -4,6 +4,7 @@ from .serializers import RecipeSerializer, IngredientSerializer
 from rest_framework import status, serializers
 from rest_framework.permissions import IsAuthenticated
 from core.models import Recipe, Ingredient
+from django.db import IntegrityError
 
 
 class RecipeListCreateView(ListCreateAPIView):
@@ -30,5 +31,10 @@ class IngredientCreateView(CreateAPIView):
         # look up the recipe that this ingredient is for
         # make sure the authenticated user who is adding the ingredient actually owns the recipe
         recipe = get_object_or_404(self.request.user.recipes, pk=self.kwargs.get("pk"))
-        # save the ingredient with the related recipe
-        serializer.save(recipe=recipe)
+
+        try:
+            # save the ingredient with the related recipe
+            serializer.save(recipe=recipe)
+        except IntegrityError as error:
+            # handle the case where the same ingredient already exists
+            raise serializers.ValidationError({"error": error})
