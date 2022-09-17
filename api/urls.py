@@ -15,4 +15,5 @@ urlpatterns = [
         name="recipe-list-public",
     ),
     path("recipes/<int:pk>", views.RecipeDetailView.as_view(), name="recipe-detail"),
+    path("recipes/<int:pk>/copy", views.RecipeCopyView.as_view(), name="recipe-copy"),
 ]

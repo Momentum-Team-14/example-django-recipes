@@ -27,3 +27,24 @@ class RecipeDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = "__all__"
+
+
+class RecipeCopySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recipe
+        fields = [
+            "pk",
+            "title",
+            "prep_time_in_minutes",
+            "cook_time_in_minutes",
+            "original_recipe",
+        ]
+
+    def create(self, validated_data):
+        recipe = Recipe.objects.create(**validated_data)
+        for ingredient in recipe.original_recipe.ingredients.all():
+            new_ingredient = ingredient
+            new_ingredient.pk = None
+            new_ingredient.recipe = recipe
+            new_ingredient.save()
+        return recipe

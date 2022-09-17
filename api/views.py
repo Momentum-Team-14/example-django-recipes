@@ -5,8 +5,13 @@ from rest_framework.generics import (
     CreateAPIView,
     RetrieveUpdateDestroyAPIView,
 )
-from .serializers import RecipeSerializer, IngredientSerializer, RecipeDetailSerializer
-from rest_framework import status, serializers
+from .serializers import (
+    RecipeSerializer,
+    IngredientSerializer,
+    RecipeDetailSerializer,
+    RecipeCopySerializer,
+)
+from rest_framework import status, serializers, response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from core.models import Recipe, Ingredient
 from django.db import IntegrityError
@@ -64,3 +69,27 @@ class RecipeListPublicView(ListAPIView):
 
     def get_queryset(self):
         return self.queryset.filter(public=True)
+
+
+class RecipeCopyView(CreateAPIView):
+    serializer_class = RecipeCopySerializer
+
+    def create(self, request, *args, **kwargs):
+        original_recipe = get_object_or_404(Recipe, pk=kwargs.get("pk"))
+        serializer = self.get_serializer(
+            data={
+                "title": original_recipe.title,
+                "prep_time_in_minutes": original_recipe.prep_time_in_minutes,
+                "cook_time_in_minutes": original_recipe.cook_time_in_minutes,
+                "original_recipe": original_recipe.pk,
+            }
+        )
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return response.Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user, public=False)
