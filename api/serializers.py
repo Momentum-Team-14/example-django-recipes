@@ -11,6 +11,18 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 class RecipeSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(slug_field="username", read_only=True)
+    recipe_url = serializers.HyperlinkedIdentityField(view_name="recipe-detail")
+
+    class Meta:
+        model = Recipe
+        fields = ["pk", "title", "public", "author", "favorited_by", "recipe_url"]
+
+
+class RecipeDetailSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(slug_field="username", read_only=True)
+    original_recipe = serializers.HyperlinkedRelatedField(
+        view_name="recipe-detail", read_only=True
+    )
 
     class Meta:
         model = Recipe
