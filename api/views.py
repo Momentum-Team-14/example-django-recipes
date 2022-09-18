@@ -10,10 +10,11 @@ from .serializers import (
     IngredientSerializer,
     RecipeDetailSerializer,
     RecipeCopySerializer,
+    UserForAdminSerializer,
 )
 from rest_framework import status, serializers, response
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from core.models import Recipe, Ingredient
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
+from core.models import Recipe, Ingredient, User
 from django.db import IntegrityError
 from django.db.models import Q
 
@@ -69,6 +70,12 @@ class RecipeListPublicView(ListAPIView):
 
     def get_queryset(self):
         return self.queryset.filter(public=True)
+
+
+class UserListAdminView(ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserForAdminSerializer
+    permission_classes = [IsAdminUser]
 
 
 class RecipeCopyView(CreateAPIView):

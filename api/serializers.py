@@ -1,4 +1,4 @@
-from core.models import Recipe, Ingredient
+from core.models import Recipe, Ingredient, User
 from rest_framework import serializers
 
 
@@ -48,3 +48,9 @@ class RecipeCopySerializer(serializers.ModelSerializer):
             new_ingredient.recipe = recipe
             new_ingredient.save()
         return recipe
+
+
+class UserForAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["pk", "username", "first_name", "last_name", "email", "is_staff"]
