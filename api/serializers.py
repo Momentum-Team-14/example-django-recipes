@@ -1,4 +1,4 @@
-from core.models import Recipe, Ingredient, User
+from core.models import Recipe, Ingredient, User, MealPlan
 from rest_framework import serializers
 
 
@@ -54,3 +54,21 @@ class UserForAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["pk", "username", "first_name", "last_name", "email", "is_staff"]
+
+
+class RecipeForMealPlanSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(
+        view_name="recipe-detail", read_only=True
+    )
+
+    class Meta:
+        model = Recipe
+        fields = ["title", "url"]
+
+
+class MealPlanSerializer(serializers.ModelSerializer):
+    recipes = RecipeForMealPlanSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = MealPlan
+        fields = ["pk", "date", "recipes"]

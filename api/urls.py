@@ -17,9 +17,9 @@ urlpatterns = [
     path("recipes/<int:pk>", views.RecipeDetailView.as_view(), name="recipe-detail"),
     path("recipes/<int:pk>/copy", views.RecipeCopyView.as_view(), name="recipe-copy"),
     path("admin/users", views.UserListAdminView.as_view(), name="user-list"),
-    # path(
-    #     "mealplans/<int:month>/<int:date>/<int:year>",
-    #     views.MealPlanView.as_view(),
-    #     name="mealplan",
-    # ),
+    path(
+        "mealplan/<int:year>/<int:month>/<int:day>",
+        views.MealPlanView.as_view(),
+        name="mealplan",
+    ),
 ]

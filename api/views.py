@@ -1,3 +1,4 @@
+import datetime
 from django.shortcuts import render, get_object_or_404
 from rest_framework.generics import (
     ListCreateAPIView,
@@ -11,10 +12,13 @@ from .serializers import (
     RecipeDetailSerializer,
     RecipeCopySerializer,
     UserForAdminSerializer,
+    MealPlanSerializer,
 )
+from rest_framework.views import APIView
 from rest_framework import status, serializers, response
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
-from core.models import Recipe, Ingredient, User
+from .permissions import IsOwningUser
+from core.models import Recipe, Ingredient, User, MealPlan
 from django.db import IntegrityError
 from django.db.models import Q
 
@@ -100,3 +104,18 @@ class RecipeCopyView(CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user, public=False)
+
+
+class MealPlanView(APIView):
+    """
+    Return the titles and URLS of recipes for a mealplan on a given date
+    """
+
+    permission_classes = [IsAuthenticated, IsOwningUser]
+
+    def get(self, request, format=None, month=None, day=None, year=None):
+        mealplan_date = datetime.date(year, month, day)
+        mealplan = get_object_or_404(MealPlan, date=mealplan_date)
+        self.check_object_permissions(request, mealplan)
+        serializer = MealPlanSerializer(mealplan, context={"request": request})
+        return response.Response(serializer.data, status=status.HTTP_200_OK)
