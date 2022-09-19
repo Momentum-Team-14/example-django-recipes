@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from rest_framework import routers
 from . import views
 
@@ -22,4 +22,6 @@ urlpatterns = [
         views.MealPlanView.as_view(),
         name="mealplan",
     ),
+    path("auth/", include("djoser.urls")),
+    path("auth/", include("djoser.urls.authtoken")),
 ]
