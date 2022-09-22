@@ -23,10 +23,19 @@ class RecipeDetailSerializer(serializers.ModelSerializer):
     original_recipe = serializers.HyperlinkedRelatedField(
         view_name="recipe-detail", read_only=True
     )
+    ingredients = IngredientSerializer(many=True, read_only=True)
 
     class Meta:
         model = Recipe
-        fields = "__all__"
+        fields = [
+            "pk",
+            "title",
+            "prep_time_in_minutes",
+            "cook_time_in_minutes",
+            "ingredients",
+            "original_recipe",
+            "author",
+        ]
 
 
 class RecipeCopySerializer(serializers.ModelSerializer):
