@@ -16,6 +16,7 @@ from .serializers import (
 )
 from rest_framework.views import APIView
 from rest_framework import status, serializers, response
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from .permissions import IsOwningUser
 from core.models import Recipe, Ingredient, User, MealPlan
@@ -23,9 +24,16 @@ from django.db import IntegrityError
 from django.db.models import Q
 
 
+class SmallResultsSet(PageNumberPagination):
+    page_size = 3
+    page_size_query_param = "page_size"
+    max_page_size = 5
+
+
 class RecipeListCreateView(ListCreateAPIView):
     serializer_class = RecipeSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = SmallResultsSet
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)

@@ -51,7 +51,7 @@ Add an ingredient for a recipe
 
 List URLs for recipes on a given date's mealplan
 
-### POST `api/mealplans/<int:month>/<int:date>/<int:year>` **TODO: IMPLEMENT**
+### POST `api/mealplans/<int:month>/<int:date>/<int:year>`
 
 Add a recipe to a mealplan for a given date
 
