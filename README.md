@@ -39,9 +39,13 @@ Make a copy of an existing public recipe
 
 Detail about one recipe with all its ingredients
 
-### PUT `api/recipes/<int:pk>` **TODO: TEST THIS**
+### PUT `api/recipes/<int:pk>`
 
-Update details about a specific recipe
+Update all details about a specific recipe
+
+### PATCH `api/recipes/<int:pk>`
+
+Update partial details about a specific recipe
 
 ### POST `api/recipes/<int:pk>/ingredients`
 
