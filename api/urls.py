@@ -22,6 +22,11 @@ urlpatterns = [
         views.MealPlanView.as_view(),
         name="mealplan",
     ),
+    path(
+        "recipes/<int:pk>/publish",
+        views.RecipePublishView.as_view(),
+        name="recipe-publish",
+    ),
     path("auth/", include("djoser.urls")),
     path("auth/", include("djoser.urls.authtoken")),
 ]

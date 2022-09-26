@@ -33,7 +33,7 @@ class Recipe(models.Model):
     original_recipe = models.ForeignKey(
         to="self", on_delete=models.SET_NULL, null=True, blank=True
     )
-    public = models.BooleanField(default=True)
+    public = models.BooleanField(default=False)
     favorited_by = models.ManyToManyField(
         User, related_name="favorite_recipes", blank=True
     )

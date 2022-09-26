@@ -1,10 +1,12 @@
 import datetime
 from django.shortcuts import render, get_object_or_404
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import (
     ListCreateAPIView,
     ListAPIView,
     CreateAPIView,
     RetrieveUpdateDestroyAPIView,
+    UpdateAPIView,
 )
 from .serializers import (
     RecipeSerializer,
@@ -128,3 +130,28 @@ class MealPlanView(APIView):
         self.check_object_permissions(request, mealplan)
         serializer = MealPlanSerializer(mealplan, context={"request": request})
         return response.Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class RecipePublishView(UpdateAPIView):
+    """
+    A recipe author can mark a recipe as public to publish it.
+    """
+
+    queryset = Recipe.objects.all()
+    serializer_class = RecipeSerializer
+    permission_classes = [IsAuthenticated]
+
+    # def get_queryset(self):
+    #     return self.request.user.recipes.all()
+
+    def get_object(self):
+        recipe = super().get_object()
+        if self.request.user != recipe.author:
+            raise PermissionDenied()
+            # I don't really need to do this check if have set the queryset
+            # to _only_ the recipes belonging to the authenticated user
+            # but it makes this extra explicit
+        return recipe
+
+    def perform_update(self, serializer):
+        serializer.save(public=True)
