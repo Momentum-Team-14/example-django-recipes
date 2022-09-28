@@ -96,3 +96,13 @@ class NewFollowSerializer(serializers.ModelSerializer):
     class Meta:
         model = FollowRelationship
         fields = ["followee"]
+
+    def create(self, validated_data):
+        """
+        Override default create method so that we don't create a duplicate entry for a follow that already exists
+        If one exists already, just return that one
+        """
+        follow, _ = FollowRelationship.objects.get_or_create(
+            follower=validated_data["follower"], followee=validated_data["followee"]
+        )
+        return follow
