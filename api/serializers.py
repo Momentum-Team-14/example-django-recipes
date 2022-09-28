@@ -92,7 +92,7 @@ class UsersIFollowSerializer(serializers.ModelSerializer):
         fields = ["pk", "followee"]
 
 
-class NewFollowSerializer(serializers.ModelSerializer):
+class FollowWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = FollowRelationship
         fields = ["followee"]

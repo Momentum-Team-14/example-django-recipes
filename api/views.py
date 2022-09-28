@@ -7,6 +7,7 @@ from rest_framework.generics import (
     CreateAPIView,
     RetrieveUpdateDestroyAPIView,
     UpdateAPIView,
+    DestroyAPIView,
 )
 from .serializers import (
     RecipeSerializer,
@@ -16,7 +17,7 @@ from .serializers import (
     UserForAdminSerializer,
     MealPlanSerializer,
     UsersIFollowSerializer,
-    NewFollowSerializer,
+    FollowWriteSerializer,
 )
 from rest_framework.views import APIView
 from rest_framework import status, serializers, response
@@ -173,3 +174,10 @@ class FollowListCreateView(ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(follower=self.request.user)
+
+
+class UnfollowView(DestroyAPIView):
+    serializer_class = FollowWriteSerializer
+
+    def get_queryset(self):
+        return self.request.user.follows_where_I_am_the_follower.all()
