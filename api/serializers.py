@@ -1,5 +1,6 @@
-from core.models import Recipe, Ingredient, User, MealPlan
+from core.models import Recipe, Ingredient, User, MealPlan, FollowRelationship
 from rest_framework import serializers
+from djoser.serializers import UserSerializer
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -81,3 +82,11 @@ class MealPlanSerializer(serializers.ModelSerializer):
     class Meta:
         model = MealPlan
         fields = ["pk", "date", "recipes"]
+
+
+class UsersIFollowSerializer(serializers.ModelSerializer):
+    followee = UserSerializer(read_only=True)
+
+    class Meta:
+        model = FollowRelationship
+        fields = ["pk", "followee"]

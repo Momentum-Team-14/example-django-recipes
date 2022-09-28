@@ -91,10 +91,15 @@ class MealPlan(models.Model, ToggleManyToMany):
         self.toggle_recipes(instance=recipe)
 
 
-class FollowRelationship(models.model):
-  follower = models.ForeignKey(User, related_name="follows_where_I_am_the_follower")
-  followee = models.ForeignKey(User, related_name="follows_where_I_am_the_one_being_followed" )
+class FollowRelationship(models.Model):
+    follower = models.ForeignKey(
+        User, related_name="follows_where_I_am_the_follower", on_delete=models.CASCADE
+    )
+    followee = models.ForeignKey(
+        User,
+        related_name="follows_where_I_am_the_one_being_followed",
+        on_delete=models.CASCADE,
+    )
 
-  def __str__(self):
-      return f"<{self.follower} follows {self.followee}>"
-
+    def __str__(self):
+        return f"<{self.follower} follows {self.followee}>"
