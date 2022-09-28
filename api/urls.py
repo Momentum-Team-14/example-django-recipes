@@ -28,9 +28,9 @@ urlpatterns = [
         name="recipe-publish",
     ),
     path(
-        "follow",
+        "follows",
         views.FollowListCreateView.as_view(),
-        name="follow-new",
+        name="follow-list",
     ),
     path("auth/", include("djoser.urls")),
     path("auth/", include("djoser.urls.authtoken")),
