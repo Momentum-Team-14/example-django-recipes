@@ -1,5 +1,6 @@
-from core.models import Recipe, Ingredient, User, MealPlan
+from core.models import Recipe, Ingredient, User, MealPlan, FollowRelationship
 from rest_framework import serializers
+from djoser.serializers import UserSerializer
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -81,3 +82,27 @@ class MealPlanSerializer(serializers.ModelSerializer):
     class Meta:
         model = MealPlan
         fields = ["pk", "date", "recipes"]
+
+
+class UsersIFollowSerializer(serializers.ModelSerializer):
+    followee = UserSerializer(read_only=True)
+
+    class Meta:
+        model = FollowRelationship
+        fields = ["pk", "followee"]
+
+
+class FollowWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FollowRelationship
+        fields = ["followee"]
+
+    def create(self, validated_data):
+        """
+        Override default create method so that we don't create a duplicate entry for a follow that already exists
+        If one exists already, just return that one
+        """
+        follow, _ = FollowRelationship.objects.get_or_create(
+            follower=validated_data["follower"], followee=validated_data["followee"]
+        )
+        return follow

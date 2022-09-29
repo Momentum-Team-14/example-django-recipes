@@ -7,6 +7,7 @@ from rest_framework.generics import (
     CreateAPIView,
     RetrieveUpdateDestroyAPIView,
     UpdateAPIView,
+    DestroyAPIView,
 )
 from .serializers import (
     RecipeSerializer,
@@ -15,13 +16,15 @@ from .serializers import (
     RecipeCopySerializer,
     UserForAdminSerializer,
     MealPlanSerializer,
+    UsersIFollowSerializer,
+    FollowWriteSerializer,
 )
 from rest_framework.views import APIView
 from rest_framework import status, serializers, response
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from .permissions import IsOwningUser
-from core.models import Recipe, Ingredient, User, MealPlan
+from core.models import Recipe, Ingredient, User, MealPlan, FollowRelationship
 from django.db import IntegrityError
 from django.db.models import Q
 
@@ -155,3 +158,26 @@ class RecipePublishView(UpdateAPIView):
 
     def perform_update(self, serializer):
         serializer.save(public=True)
+
+
+class FollowListCreateView(ListCreateAPIView):
+    serializer_class = UsersIFollowSerializer
+    queryset = FollowRelationship.objects.all()
+
+    def get_queryset(self):
+        return self.request.user.follows_where_I_am_the_follower.all()
+
+    def get_serializer_class(self):
+        if self.request.method == "POST":
+            return NewFollowSerializer
+        return super().get_serializer_class()
+
+    def perform_create(self, serializer):
+        serializer.save(follower=self.request.user)
+
+
+class UnfollowView(DestroyAPIView):
+    serializer_class = FollowWriteSerializer
+
+    def get_queryset(self):
+        return self.request.user.follows_where_I_am_the_follower.all()

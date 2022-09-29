@@ -27,6 +27,12 @@ urlpatterns = [
         views.RecipePublishView.as_view(),
         name="recipe-publish",
     ),
+    path(
+        "follows",
+        views.FollowListCreateView.as_view(),
+        name="follow-list",
+    ),
+    path("follows/<int:pk>", views.UnfollowView.as_view(), name="unfollow"),
     path("auth/", include("djoser.urls")),
     path("auth/", include("djoser.urls.authtoken")),
 ]
